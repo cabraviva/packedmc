@@ -77,6 +77,14 @@ const generator = async (prompts, validationRegExes, about, dir, cmd, mergeScrip
     fs.ensureFileSync(path.join(dir, 'src', 'pack.js'))
     fs.ensureFileSync(path.join(dir, 'src', 'setup.js'))
     fs.ensureFileSync(path.join(dir, 'src', 'main.js'))
+
+    // @Build.js
+    removeDefault('Build') // Removes the default error message
+    mergeScript('Build', `exit(await spawn('node', ["src/pack.js"]))`)
+
+    await cmd('npm i packedmc -D')
+
+    console.log(chalk.green(`Successfully generated datapack. Build it using ${chalk.cyan('nautus build')}. Start writing code in your src/pack.js file, where your pack is defined. If you want to automatically copy`))
 }
 
 module.exports = {
