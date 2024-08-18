@@ -50,10 +50,33 @@ const generator = async (prompts, validationRegExes, about, dir, cmd, mergeScrip
     */
 
     const { prompt, confirm, numeral, toggle, select, multiSelect } = prompts
+    const { identifier, repository } = validationRegExes
+    const path = require('path')
 
     // Do your prompts here
+    const packName = await prompt('Pack Name', 'mydatapack', identifier)
+    const license = await prompt('License', 'MIT', validationRegExes.license)
 
     // Do your generation here
+    const pkgJSON = {
+        name: packName,
+        version: '1.0.0',
+        description: '',
+        main: 'src/pack.js',
+        scripts: {
+            test: "echo \"Error: no test specified\" && exit 1"
+        },
+        keywords: [],
+        author: `${about.name || about.githubUsername || '?'} (https://github.com/${about.githubUsername || '?'})`,
+        license,
+        dependencies: {}
+    }
+    fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify(pkgJSON, null, 4))
+    fs.ensureFileSync(path.join(dir, 'README.md'))
+    fs.ensureDirSync(path.join(dir, 'src'))
+    fs.ensureFileSync(path.join(dir, 'src', 'pack.js'))
+    fs.ensureFileSync(path.join(dir, 'src', 'setup.js'))
+    fs.ensureFileSync(path.join(dir, 'src', 'main.js'))
 }
 
 module.exports = {
